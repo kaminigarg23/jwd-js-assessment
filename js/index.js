@@ -44,6 +44,16 @@ window.addEventListener('DOMContentLoaded', () => {
       o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
       a: 1,
     },
+    {
+      q: 'Which is the largest planet in the solar system',
+      o: ['Jupitor', 'Earth', 'Mars', 'Neptune'],
+      a: 1,
+    },
+    {
+      q: 'Which is the largest country by population',
+      o: ['China', 'Maxico', 'India', 'Russia'],
+      a: 1,
+    },
   ];
 
   // function to Display the quiz questions and answers from the object
