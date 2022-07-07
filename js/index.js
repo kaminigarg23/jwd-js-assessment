@@ -18,6 +18,49 @@
 
       5. Add a countdown timer - when the time is up, end the quiz, display the score and highlight the correct answers
 *************************** */
+const submit = document.getElementById("btnSubmit");
+const totalScore = document.getElementById("score");
+const time = document.getElementById('time');   
+//Task 5---- counter
+// const startingMinutes = 3;
+// let time = startingMinutes*60;
+// const timerEl = document.getElementById('timer');
+// setInterval(updateCountdoen, 1000);
+
+// function updateCountdoen() {
+//   const minutes= Math.floor(time/60);
+//   let seconds = time % 60;
+
+//     timerEl.innerHTML = `${minutes}: ${seconds}`;
+//     time--;
+// }
+var minutesToAdd = 3;
+var currentDate = new Date();
+var countDownDate = new Date(currentDate.getTime() + minutesToAdd * 60000);
+// Update the count down every 1 second
+var x = setInterval(function() {
+  // Get today's date and time
+  var now = new Date().getTime();
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+  // Time calculations for days, hours, minutes and seconds
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  // Output the result in an element with id="demo"
+  document.getElementById("time").innerHTML = minutes + "m " + seconds + "s ";
+  // If the count down is over, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("time").innerHTML = "...Sorry time Finished";
+  }
+}, 1000);
+
+
+//Task-4 ---- window reload
+
+    function reloadPage() {
+      window.location.assign("http://127.0.0.1:5500/index.html")
+    }
 
 window.addEventListener('DOMContentLoaded', () => {
   const start = document.querySelector('#start');
@@ -25,6 +68,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#quizBlock').style.display = 'block';
     start.style.display = 'none';
   });
+  
+  
   // quizArray QUESTIONS & ANSWERS
   // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
   // Basic ideas from https://code-boxx.com/simple-javascript-quiz/
@@ -42,17 +87,17 @@ window.addEventListener('DOMContentLoaded', () => {
     {
       q: 'What is the capital of Australia',
       o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
-      a: 1,
+      a: 0,
     },
     {
       q: 'Which is the largest planet in the solar system',
       o: ['Jupitor', 'Earth', 'Mars', 'Neptune'],
-      a: 1,
+      a: 0,
     },
     {
       q: 'Which is the largest country by population',
       o: ['China', 'Maxico', 'India', 'Russia'],
-      a: 1,
+      a: 0,
     },
   ];
 
@@ -76,6 +121,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Calculate the score
   const calculateScore = () => {
     let score = 0;
+    const maxScore = 5;
+    const quizBlock = docu
+    const correctAnswers = [1, 3 , 0, 0, 0];
     quizArray.map((quizItem, index) => {
       for (let i = 0; i < 4; i++) {
         //highlight the li if it is the correct answer
@@ -86,14 +134,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (quizItem.a == i) {
           //change background color of li element here
+          document.getElementById().style.color = 'green'
         }
 
         if (radioElement.checked) {
-          // code for task 1 goes here
+          
+          
         }
       }
     });
   };
+  submit.addEventListener('submit', e => {
+    if(time == 0) {
+      e.preventDefault;
+    }
+  })
+  
+  
 
   // call the displayQuiz function
   displayQuiz();
