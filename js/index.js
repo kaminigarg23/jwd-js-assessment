@@ -12,61 +12,56 @@
       4. Reload the page when the reset button is clicked (hint: search window.location)
       5. Add a countdown timer - when the time is up, end the quiz, display the score and highlight the correct answers
 *************************** */
-const submit = document.getElementById("btnSubmit");
-const totalScore = document.getElementById("score");
-const time = document.getElementById('time');   
-//Task 5---- counter
-// const startingMinutes = 3;
-// let time = startingMinutes*60;
-// const timerEl = document.getElementById('timer');
-// setInterval(updateCountdoen, 1000);
+let timerInterval;
+const timerCountdown = () => {
+  let min = 0;
+  let sec = 60;
+  timerInterval =
+    setInterval(() => {
+      const timeRemaining = document.querySelector("#time");
 
-// function updateCountdoen() {
-//   const minutes= Math.floor(time/60);
-//   let seconds = time % 60;
+      sec--;
+      if (sec >= 10) {
+        timeRemaining.innerHTML = `${min}:${sec}`
 
-//     timerEl.innerHTML = `${minutes}: ${seconds}`;
-//     time--;
-// }
-var minutesToAdd = 3;
-var currentDate = new Date();
-var countDownDate = new Date(currentDate.getTime() + minutesToAdd * 60000);
-// Update the count down every 1 second
-var x = setInterval(function() {
-  // Get today's date and time
-  var now = new Date().getTime();
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
-  // Time calculations for days, hours, minutes and seconds
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  // Output the result in an element with id="demo"
-  document.getElementById("time").innerHTML = minutes + "m " + seconds + "s ";
-  // If the count down is over, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("time").innerHTML = "...Sorry time Finished";
-  }
-}, 1000);
+      } else {
+        timeRemaining.innerHTML = `${min}:0${sec}`
+      }
 
+      if (sec <= 0) {
 
-//Task-4 ---- window reload
+        clearInterval(timerInterval);
+        calculateScore();
+        displayScore();
 
-    function reloadPage() {
-      location.reload();
-    }
+        disableOptions();
+
+        submitBtn.setAttribute("disabled", "")
+        timeRemaining.insertAdjacentHTML("afterend", `<h3 class="text-danger text-center">Sorry..Time is finished </h3>`)
+      };
+    }, 1000)
+};
+
+// //Task-4 ---- window reload
+
+//     function reloadPage() {
+//       location.reload();
+//     }
 
 window.addEventListener('DOMContentLoaded', () => {
   const start = document.querySelector('#start');
   start.addEventListener('click', function (e) {
     document.querySelector('#quizBlock').style.display = 'block';
     start.style.display = 'none';
+    timerCountdown();
   });
-  
-  
+
+
   // quizArray QUESTIONS & ANSWERS
   // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
   // Basic ideas from https://code-boxx.com/simple-javascript-quiz/
+
+
   const quizArray = [
     {
       q: 'Which is the third planet from the sun?',
@@ -94,10 +89,8 @@ window.addEventListener('DOMContentLoaded', () => {
       a: 0,
     },
   ];
-
-  // function to Display the quiz questions and answers from the object
+  const quizWrap = document.querySelector('#quizWrap');
   const displayQuiz = () => {
-    const quizWrap = document.querySelector('#quizWrap');
     let quizDisplay = '';
     quizArray.map((quizItem, index) => {
       quizDisplay += `<ul class="list-group">
@@ -111,41 +104,63 @@ window.addEventListener('DOMContentLoaded', () => {
       quizWrap.innerHTML = quizDisplay;
     });
   };
+  displayQuiz();
 
-  // Calculate the score
+  const disableOptions = () => {
+    const allRadioElements = document.querySelectorAll(`[type="radio"]`)
+    const allLiElements = document.querySelectorAll(`li`)
+    allRadioElements.forEach(eachRadioElement => {
+      eachRadioElement.setAttribute("disabled", "");
+    });
+    allLiElements.forEach(eachLiElement => {
+      eachLiElement.classList.add("text-black-50")
+    });
+  }
+  //Calculate the score
+  let score = 0;
   const calculateScore = () => {
-    let score = 0;
-    const maxScore = 5;
-    const quizBlock = docu
-    const correctAnswers = [1, 3 , 0, 0, 0];
     quizArray.map((quizItem, index) => {
       for (let i = 0; i < 4; i++) {
         //highlight the li if it is the correct answer
         let li = `li_${index}_${i}`;
         let r = `radio_${index}_${i}`;
-        liElement = document.querySelector('#' + li);
-        radioElement = document.querySelector('#' + r);
-
+        // selecting each li
+        const liElement = document.querySelector('#' + li);
+        //Selecting each radio button
+        const radioElement = document.querySelector('#' + r);
         if (quizItem.a == i) {
-          //change background color of li element here
-          document.getElementById().style.color = 'green'
-        }
+          //change background color of li element
+          liElement.style.backgroundColor = "rgba(40,247,40,0.3)";
+        };
 
-        if (radioElement.checked) {
-          
-          
+        // If correct answer, increase score by 1
+        if (radioElement.checked && quizItem.a == i) {
+          score++;
         }
       }
+
     });
   };
-  submit.addEventListener('submit', e => {
-    if(time == 0) {
-      e.preventDefault;
-    }
-  })
-  
-  
 
-  // call the displayQuiz function
-  displayQuiz();
+  const displayScore = () => {
+    let totalScore = document.querySelector("#score");
+    totalScore.innerHTML = `<h2 class="text-dark mt-2 mb-5">Your total score is : <span class="text-info">${score}/${quizArray.length}</span></h2>`
+  };
+
+  const submitBtn = document.querySelector("#btnSubmit")
+  submitBtn.addEventListener("click", () => {
+    calculateScore();
+    displayScore();
+    // Disable option elements
+    disableOptions();
+    submitBtn.setAttribute("disabled", "")
+    // Stop timer
+    clearInterval(timerInterval);
+  })
+
+  //Reload the page
+  const resetBtn = document.querySelector("#btnReset")
+  resetBtn.addEventListener("click", () => {
+    location.reload();
+  })
 });
